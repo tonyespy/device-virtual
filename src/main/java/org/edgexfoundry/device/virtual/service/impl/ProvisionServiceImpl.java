@@ -64,9 +64,11 @@ public class ProvisionServiceImpl implements ProvisionService {
 
 	private void registerDeviceProfies() {
 		List<String> profileYamlPaths = applicationProperties.getDeviceProfilePaths();
+		logger.info("registerDeviceProfile: profileYamlPaths: " + profileYamlPaths);
 		if (profileYamlPaths == null || profileYamlPaths.size() == 0)
 			return;
 		for (String path : profileYamlPaths) {
+			logger.info("registerDeviceProfile: path: " + path);
 			File[] files = yamlReader.listYamlFiles(path);
 			addProfileFromYamls(files);
 		}
@@ -77,12 +79,12 @@ public class ProvisionServiceImpl implements ProvisionService {
 			DeviceProfile deviceProfile = yamlReader.readYamlFileAsDeviceProfile(yamlFile);
 			deviceProfile.setOrigin(System.currentTimeMillis());
 			if (!isProfileExisting(deviceProfile)) {
-				logger.debug("Device Profile: " + deviceProfile.getName() + "is not in DB.  Creating...");
+				logger.info("Device Profile: " + deviceProfile.getName() + "is not in DB.  Creating...");
 				String id = deviceProfileClient.add(deviceProfile);
 				deviceProfile.setId(id);
 				provisionedProfiles.add(deviceProfile);
 			} else {
-				logger.debug("Device Profile: " + deviceProfile.getName() + "has already been in DB");
+				logger.info("Device Profile: " + deviceProfile.getName() + "has already been in DB");
 			}
 		}
 	}
